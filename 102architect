@@ -117,7 +117,6 @@ def main():
     if len(sys.argv) == 2 and sys.argv[1] == "-h":
         with open("help.json", "r") as file:
             help_message = json.load(file);
-            print(len(help_message))
             for e in help_message:
                 print(e, end="")
             return 0
