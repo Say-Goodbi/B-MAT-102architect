@@ -1,6 +1,7 @@
-#!/bin/env python
+#!/usr/bin/env python3
 import sys
 from math import cos, sin, pi
+
 class Matrix:
     def __init__(self, matrix, height, width) -> None:
         self.value = matrix
@@ -100,6 +101,9 @@ def architect(argv):
         [0, 0, 1]
     ]
     
+#    if len(argv < 4) :
+#        print("tes trop con")
+#        exit(84)
     matrix = Matrix(matrix_position, 3, 1)
     matrix2 = Matrix(default_matrix, 3, 3)
     matrix2 = matrix2.transformation(sys.argv[3:])
