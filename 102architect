@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 from math import cos, sin, pi
+import json
 
 class Matrix:
     def __init__(self, matrix, height, width) -> None:
@@ -70,7 +71,7 @@ class Matrix:
         reflection_m = Matrix(rmatrix, 3, 3)
         return reflection_m * self
     def transformation(self, argv):
-        if (len(argv) > 1):
+        if (len(argv) >= 1):
             match argv[0]:
                 case "-t":
                     self = self.translate(int(argv[1]), int(argv[2]))
@@ -85,7 +86,7 @@ class Matrix:
                     self = self.rotation(int(argv[1]))
                     self = self.transformation(argv[2:])
                 case _:
-                    print("tes trop con")
+                    print("invalid parameters")
                     exit(84)
         return self
 
@@ -101,9 +102,9 @@ def architect(argv):
         [0, 0, 1]
     ]
     
-#    if len(argv < 4) :
-#        print("tes trop con")
-#        exit(84)
+    if len(argv) < 5:
+        print("invalid parameters")
+        exit(84)
     matrix = Matrix(matrix_position, 3, 1)
     matrix2 = Matrix(default_matrix, 3, 3)
     matrix2 = matrix2.transformation(sys.argv[3:])
@@ -113,10 +114,18 @@ def architect(argv):
     print("({:.2f}, {:.2f})".format(m.value[0][0], m.value[1][0]))
 
 def main():
+    if len(sys.argv) == 2 and sys.argv[1] == "-h":
+        with open("help.json", "r") as file:
+            help_message = json.load(file);
+            print(len(help_message))
+            for e in help_message:
+                print(e, end="")
+            return 0
+
     try:
         architect(sys.argv)
     except:
-        print("tes trop con")
+        print("invalid parameters")
         exit(84)
 
 if __name__ == "__main__":
