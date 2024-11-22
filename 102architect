@@ -1,0 +1,119 @@
+#!/bin/env python
+import sys
+from math import cos, sin, pi
+class Matrix:
+    def __init__(self, matrix, height, width) -> None:
+        self.value = matrix
+        self.width = width
+        self.height = height
+
+    def __mul__(self, other):
+        result = [[0 for _ in range(other.width)] for _ in range(self.height)]
+        for i in range(self.height):
+            for j in range(other.width):
+                for k in range(other.height):
+                    result[i][j] += self.value[i][k] * other.value[k][j]
+        new = Matrix(result, self.height, other.width)
+        return new
+    
+    def __str__(self):
+        string = ""
+        for line in self.value:
+            for element in line:
+                string += "{:.2f}    ".format(element)
+                if element < 0:
+                    string = string[:-1]
+            string = string[:-4]
+            string += "\n"
+        return string
+
+    def translate(self, i, j):
+        tmatrix = [
+            [1, 0, i],
+            [0, 1, j],
+            [0, 0, 1]
+        ]
+        translate_m = Matrix(tmatrix, 3, 3)
+        print(f"Translation along vector ({i}, {j})")
+        return translate_m * self
+
+    def scaling(self, m, n):
+        smatrix = [
+            [m, 0, 0],
+            [0, n, 0],
+            [0, 0, 1]
+        ]
+        scaling_m = Matrix(smatrix, 3, 3)
+        print(f"Scaling by factors {m} and {n}")
+        return scaling_m * self
+
+    def rotation(self, d):
+        print(f"Rotation by a {d} degree angle")
+        d = d * pi / 180
+        rmatrix = [
+            [cos(d), -sin(d), 0],
+            [sin(d), cos(d), 0],
+            [0, 0, 1]
+        ]
+        rotation_m = Matrix(rmatrix, 3, 3)
+        return rotation_m * self
+
+    def reflection(self, d):
+        print(f"Reflection over an axis with an inclination angle of {d} degrees")
+        d = d * pi / 180
+        rmatrix = [
+            [cos( 2 * d), sin(2 * d), 0],
+            [sin(2 * d), -cos(2 * d), 0],
+            [0, 0, 1]
+        ]
+        reflection_m = Matrix(rmatrix, 3, 3)
+        return reflection_m * self
+    def transformation(self, argv):
+        if (len(argv) > 1):
+            match argv[0]:
+                case "-t":
+                    self = self.translate(int(argv[1]), int(argv[2]))
+                    self = self.transformation(argv[3:])
+                case "-z":
+                    self = self.scaling(int(argv[1]), int(argv[2]))
+                    self = self.transformation(argv[3:])
+                case "-s":
+                    self = self.reflection(int(argv[1]))
+                    self = self.transformation(argv[2:])
+                case "-r":
+                    self = self.rotation(int(argv[1]))
+                    self = self.transformation(argv[2:])
+                case _:
+                    print("tes trop con")
+                    exit(84)
+        return self
+
+def architect(argv):
+    matrix_position = [
+        [float(sys.argv[1])],
+        [float(sys.argv[2])],
+        [1.00]
+    ]
+    default_matrix = [
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1]
+    ]
+    
+    matrix = Matrix(matrix_position, 3, 1)
+    matrix2 = Matrix(default_matrix, 3, 3)
+    matrix2 = matrix2.transformation(sys.argv[3:])
+    print(matrix2, end="")
+    m = (matrix2 * matrix)
+    print("({:.2f}, {:.2f})".format(matrix.value[0][0], matrix.value[1][0]), end=" => ")
+    print("({:.2f}, {:.2f})".format(m.value[0][0], m.value[1][0]))
+
+def main():
+    try:
+        architect(sys.argv)
+    except:
+        print("tes trop con")
+        exit(84)
+
+if __name__ == "__main__":
+    main()
