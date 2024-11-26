@@ -25,7 +25,9 @@ class Matrix:
                 string += "{:.2f}    ".format(element)
                 if element < 0:
                     string = string[:-1]
-            string = string[:-4]
+            string = string[:-3]
+            if string[-1] == " ":
+                string = string[:-1]
             string += "\n"
         return string
 
